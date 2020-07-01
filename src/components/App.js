@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from './Navbar'
 import MovieCard from './MovieCard';
 import { data } from '../data';
+import { addMovies } from '../actions';
 
 
 class App extends React.Component{
@@ -18,11 +19,16 @@ class App extends React.Component{
         this.forceUpdate();
       });
 
+      // store.dispatch(
+      //   {
+      //     type:'ADD_MOVIES',
+      //     movies:data,
+      //   }
+      // );
+
+      //we will add these with the help of action dispatcher
       store.dispatch(
-        {
-          type:'ADD_MOVIES',
-          movies:data,
-        }
+        addMovies(data),
       );
       console.log('after state',this.props.store.getState());
   }
