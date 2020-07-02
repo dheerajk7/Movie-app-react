@@ -1,10 +1,19 @@
 import {ADD_MOVIES} from '../actions';
 
-export default function movies(state=[], action)           //takes state and action as argument passing default state as blank array
+const initialMoviesState = {
+    list:[],
+    favourites:[],
+};
+
+export default function movies(state=initialMoviesState, action)           //takes state and action as argument passing default state as blank array
 {
     if(action.type === ADD_MOVIES)
     {
-        return action.movies;
+        // using spread operator to copy object
+        return {
+            ...initialMoviesState,
+            list:action.movies,
+        }
     }
     return state;
 }
