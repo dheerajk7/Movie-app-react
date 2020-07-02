@@ -2,14 +2,33 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/App';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './reducers'
 
 //creating store
 //for store creatin we have to pass reducer as argument to createStore function
 
+//creating a middleware
+//its a function like f(obj,next,action) but after currying looks like these
+const logger = function(obj)
+{
+  //this obj has two function dispatch and getState we can use them here to perform some operation related to them
+  // like {dispatch,getState}
+  return function(next)
+  {
+    return function(action)
+    {
+      console.log('Middleware 1 ACTION_TYPE = ',action.type);
+      next(action);
+    }
+  }
+}
+
+//we can do dereferencing here in parameter as well
+const logger2 = ({dispatch,getState}) => (next) => (action) => { console.log('middleware 2 action type ', action.type); next(action);};
+
 //this will call reducer and get the state
-const store = createStore(rootReducer);
+const store = createStore(rootReducer,applyMiddleware(logger,logger2));
 
 //we will set these state in component not here
 // console.log('store',store);
