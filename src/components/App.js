@@ -63,22 +63,24 @@ class App extends React.Component{
 
   render()
   {
-    const {list,favourites,showFavourite} = this.props.store.getState().movies;
-    let movies = list;
+    const {movies,search} = this.props.store.getState();
+    const {list,favourites,showFavourite} = movies;
+    let movieList = list;
+    console.log('list of movies',movieList);
     if(showFavourite)
     {
-      movies = favourites;
+      movieList = favourites;
     }
     return (
       <div className="App">
-        <Navbar/>
+        <Navbar dispatch = {this.props.store.dispatch} search={search}/>
         <div className="main">
             <div className="tabs">
               <div className={`tab ${showFavourite ? '' : 'active-tabs'}`} onClick={this.handleShowMovie}>Movies</div>
               <div className={`tab ${showFavourite ? 'active-tabs':''}`} onClick={this.handleShowFavourite}>Favourites</div>
             </div>
             <div className="list">
-              {movies.map((movie, index) =>(
+              {movieList.map((movie, index) =>(
                 <MovieCard 
                   movie={movie} 
                   key={`movies ${index}`}

@@ -4,6 +4,7 @@ import './index.css';
 import App from './components/App';
 import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './reducers'
+import thunk from 'redux-thunk';
 
 //creating store
 //for store creatin we have to pass reducer as argument to createStore function
@@ -27,8 +28,21 @@ const logger = function(obj)
 //we can do dereferencing here in parameter as well
 const logger2 = ({dispatch,getState}) => (next) => (action) => { console.log('middleware 2 action type ', action.type); next(action);};
 
+
+//handle function type action here in these middleware
+//we have these thunk inbuilt in redux library redux-thunk we will use it directly that middleware
+//now commenting these
+// const thunk = ({dispatch,getState}) => (next) => (action) => {
+//   if(typeof action === 'function')
+//   {
+//     action(dispatch);
+//     return;
+//   }
+//   next(action);
+// }
+
 //this will call reducer and get the state
-const store = createStore(rootReducer,applyMiddleware(logger,logger2));
+const store = createStore(rootReducer,applyMiddleware(logger,logger2,thunk));
 
 //we will set these state in component not here
 // console.log('store',store);
