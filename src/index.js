@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/App';
 import { createStore } from 'redux';
-import movies from './reducers'
+import rootReducer from './reducers'
 
 //creating store
 //for store creatin we have to pass reducer as argument to createStore function
 
 //this will call reducer and get the state
-const store = createStore(movies);
+const store = createStore(rootReducer);
 
 //we will set these state in component not here
 // console.log('store',store);
