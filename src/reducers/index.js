@@ -1,4 +1,5 @@
 import {ADD_MOVIES, ADD_FAVOURITE,REMOVE_FAVOURITE, SET_SHOW_FAVOURITE} from '../actions';
+import {combineReducers} from 'redux';
 
 const initialMoviesState = {
     list:[],
@@ -73,17 +74,28 @@ export function search(state=initialSearchState, action)
     return state;
 }
 
-const initialRootState = {
-    movies:initialMoviesState,
-    search:initialSearchState,
-}
+// const initialRootState = {
+//     movies:initialMoviesState,
+//     search:initialSearchState,
+// }
 
 
 //making one reducer from different reducers
-export default function rootReducer(state = initialRootState, action)
-{
-    return {
-        movies:movies(state.movies,action),
-        search:search(state.search,action),
-    }
-}
+
+//these thing is automatically done by redux combineReducer() method
+// export default function rootReducer(state = initialRootState, action)
+// {
+//     return {
+//         movies:movies(state.movies,action),
+//         search:search(state.search,action),
+//     }
+// }
+
+
+export default combineReducers({
+    //just mention all the reducer as properties and these will call them itself
+    movies:movies,
+    // search:search,
+    //we can use shorthand as well like as name of property and reducer name is same
+    search
+});
