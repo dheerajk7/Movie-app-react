@@ -2,7 +2,7 @@ import React from 'react';
 import MovieCard from './MovieCard';
 import { data } from '../data';
 import { addMovies, setShowFavourite} from '../actions';
-import { connect } from '../index';
+import { connect } from 'react-redux';
 import NavbarWrapper from './Navbar';
 
 
@@ -90,7 +90,7 @@ class App extends React.Component{
                 />
               ))}
             </div>
-            { movies.length === 0 ? <div className='no-movies'>No movies to display</div> : null}
+            { movieList.length === 0 ? <div className='no-movies'>No movies to display</div> : null}
         </div>
       </div>
     );
