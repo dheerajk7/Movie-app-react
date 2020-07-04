@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './components/App';
 import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './reducers'
 import thunk from 'redux-thunk';
+import AppWrapper from './components/App';
+
 
 //creating store
 //for store creatin we have to pass reducer as argument to createStore function
@@ -56,9 +57,85 @@ const store = createStore(rootReducer,applyMiddleware(logger,logger2,thunk));
 // console.log('after state', store.getState());
 
 
+//using context to send store accross all componets
+export const StoreContext = createContext();
+//it have two method Provider and Ponsumer
+//Provider to send store or user or anything
+//Consumer to get the store or user or anything
+//we can directly send the context as well and we can wrap that in new class and then send as well
+//these store can be accessed throughout all the child inside provider using consumer method
+//direclty using
+// ReactDOM.render(
+//   <React.StrictMode>
+//     <StoreContext.Provider value={store} >   
+//       <App store={store} />
+//     </StoreContext.Provider>
+//   </React.StrictMode>,
+//   document.getElementById('root')
+// );
+
+//using a wrapper class
+
+class Provider extends React.Component
+{
+  render()
+  {
+    const {store} = this.props;
+    return (<StoreContext.Provider value={store} >
+      {this.props.children}
+    </StoreContext.Provider>);
+  }
+}
+
+export function connect(callback)
+{
+  return function(Component)
+  {
+      class ConnectedComponent extends React.Component
+      {
+        constructor(props)
+        {
+          super(props);
+          this.unsubscribe = this.props.store.subscribe(() => {
+            this.forceUpdate();
+          });
+        }
+
+        render()
+        {
+          const {store} = this.props;
+          const state = store.getState();
+          const dataToBePassedAsProps = callback(state);
+          return(
+            <Component {...dataToBePassedAsProps} dispatch={store.dispatch}/>
+          );
+        }
+      }
+
+      class ConnectedComponentWrapper extends React.Component
+      {
+        render()
+        {
+          return (
+            <StoreContext.Consumer>
+              {
+                (store) => {
+                  return <ConnectedComponent store = {store}/>
+                }
+              }
+            </StoreContext.Consumer>
+          );
+        }
+      }
+      return ConnectedComponentWrapper;
+  }
+}
+
 ReactDOM.render(
   <React.StrictMode>
-    <App store={store} />
+    <Provider store= {store} >
+      <AppWrapper store={store} />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

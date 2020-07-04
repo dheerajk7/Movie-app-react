@@ -1,8 +1,9 @@
 import React from 'react';
-import Navbar from './Navbar'
 import MovieCard from './MovieCard';
 import { data } from '../data';
 import { addMovies, setShowFavourite} from '../actions';
+import { connect } from '../index';
+import NavbarWrapper from './Navbar';
 
 
 class App extends React.Component{
@@ -12,12 +13,12 @@ class App extends React.Component{
   {
       //making an api call
       //dispatching an action
-      const {store} = this.props;
+      // const {store} = this.props;
 
-      store.subscribe(()=>{
-        console.log('store',store.getState());
-        this.forceUpdate();
-      });
+      // store.subscribe(()=>{
+      //   console.log('store',store.getState());
+      //   this.forceUpdate();
+      // });
 
       // store.dispatch(
       //   {
@@ -27,15 +28,15 @@ class App extends React.Component{
       // );
 
       //we will add these with the help of action dispatcher
-      store.dispatch(
+      this.props.dispatch(
         addMovies(data),
       );
-      console.log('after state',this.props.store.getState());
+      // console.log('after state',this.props.store.getState());
   }
 
   isFavourite(movie)
   {
-    const {favourites} = this.props.store.getState().movies;
+    const {favourites} = this.props.movies;
     let index = favourites.indexOf(movie);
     if(index !== -1)
     {
@@ -45,25 +46,25 @@ class App extends React.Component{
 
   handleShowFavourite = () =>
   {
-    const {store} = this.props;
-    store.dispatch(
+    // const {store} = this.props;
+    this.props.dispatch(
       setShowFavourite(true)
     );
-    console.log('show favourite',this.props.store.getState());
+    // console.log('show favourite',this.props.store.getState());
   }
 
   handleShowMovie = () =>
   {
-    const {store} = this.props;
-    store.dispatch(
+    // const {store} = this.props;
+    this.props.dispatch(
       setShowFavourite(false),
     );
-    console.log('show movie',this.props.store.getState());
+    // console.log('show movie',this.props.store.getState());
   }
 
   render()
   {
-    const {movies,search} = this.props.store.getState();
+    const {movies} = this.props;
     const {list,favourites,showFavourite} = movies;
     let movieList = list;
     console.log('list of movies',movieList);
@@ -73,7 +74,7 @@ class App extends React.Component{
     }
     return (
       <div className="App">
-        <Navbar dispatch = {this.props.store.dispatch} search={search}/>
+        <NavbarWrapper/>
         <div className="main">
             <div className="tabs">
               <div className={`tab ${showFavourite ? '' : 'active-tabs'}`} onClick={this.handleShowMovie}>Movies</div>
@@ -84,7 +85,7 @@ class App extends React.Component{
                 <MovieCard 
                   movie={movie} 
                   key={`movies ${index}`}
-                  dispatch = {this.props.store.dispatch}
+                  dispatch = {this.props.dispatch}
                   isFavourite = {this.isFavourite(movie)}
                 />
               ))}
@@ -97,4 +98,30 @@ class App extends React.Component{
   
 }
 
-export default App;
+//no need to perform these wrapping we are doing that
+// class AppWrapper extends React.Component {
+//   render()
+//   {
+//     return (
+//       <StoreContext.Consumer>
+//         { (store) =>
+//         {
+//           return <App store={store}/>
+//         }
+//         }
+//       </StoreContext.Consumer>);
+//   }
+  
+// }
+
+//this function will tell us what we need in props;
+function mapStateToProps(state)
+{
+  return {
+    movies:state.movies,
+    search:state.search,
+  }
+}
+
+const connectedAppComponent = connect(mapStateToProps)(App);
+export default connectedAppComponent;

@@ -1,5 +1,6 @@
 import React from 'react';
 import {handleMovieSearch,addToMovies, hideSearchResult} from '../actions'
+import { connect } from '../index';
 class Navbar extends React.Component
 {
     constructor(props)
@@ -57,4 +58,12 @@ class Navbar extends React.Component
     }
 }
 
-export default Navbar;
+function mapStateToProps(state)
+{
+    return {
+        search:state.search,
+    }   
+}
+
+const connectedNavbarComponent = connect(mapStateToProps)(Navbar);
+export default connectedNavbarComponent;
